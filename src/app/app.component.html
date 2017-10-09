@@ -1,20 +1,69 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{title}}!
-  </h1>
-  <img width="300" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
-</div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
+<app-navbar></app-navbar>
 
+<div class="container main-container">
+  <div class="row">
+    <div class="col-md-4">
+      <div *ngIf="!marcadorSel" class="animated fadeIn ">
+        <div class="alert alert-info" role="alert">
+          <strong>Haga Click</strong> en un marcador para ver su detalle y editarlo.
+        </div>
+      </div>
+
+
+      <div *ngIf="guardado"
+
+        class="alert alert-success animated fadeIn " id="success-alert">
+        <button type="button" class="close" data-dismiss="alert">x</button>
+        <strong>Guardado! </strong>
+        <br> Se han guardado los datos del marcador seleccionado.
+      </div>
+
+
+      <div *ngIf="marcadorSel" class="animated fadeIn fast">
+        <h5>Marcador</h5>
+        <hr>
+
+
+
+
+        <div class="form-group">
+          <label for="titulo">Titulo</label>
+          <input [(ngModel)]="marcadorSel.titulo" type="text" name="titulo" class="form-control" placeholder="Titulo Marcador">
+        </div>
+        <div class="form-group">
+          <label for="titulo">Descripción</label>
+          <textarea [(ngModel)]="marcadorSel.desc" type="text" name="descripcion" class="form-control" rows="5"> </textarea>
+        </div>
+        <div class="form-group">
+          <div class="form-group">
+            <label for="draggable">Se puede mover?</label>
+            <select [(ngModel)]="marcadorSel.draggable" class="form-control" name="draggable">
+              <option [ngValue]="true">SI</option>
+              <option [ngValue]="false">NO</option>
+            </select>
+          </div>
+        </div>
+        <button (click)="guardarMarcador()" type="button" class="btn btn-primary btn-lg btn-block">Guardar Cambios</button>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <agm-map class="agm-map-container" [latitude]="lat" [longitude]="lng" [zoom]="zoom" (mapClick)="clickMapa( $event )">
+        <agm-marker *ngFor="let marcador of _ms.marcadores; let i = index" [latitude]="marcador.lat" [longitude]="marcador.lng" [title]="marcador.titulo"
+          [markerDraggable]="marcador.draggable" (markerClick)="clickMarcador( marcador , i)" (dragEnd)="FinArrastrarMarcador( marcador , $event )">
+          <agm-info-window (infoWindowClose)="cierraInfo()">
+            <strong> {{marcador.titulo}} </strong>
+            <p *ngIf="marcador.desc">
+              {{marcador.desc}}
+            </p>
+            <p>
+              <br>
+              <a (click)="_ms.borraMarcador(i);marcadorSel = null" class="text-danger puntero">Borrar Marcador
+              </a>
+            </p>
+          </agm-info-window>
+        </agm-marker>
+      </agm-map>
+    </div>
+  </div>
+
+</div>
